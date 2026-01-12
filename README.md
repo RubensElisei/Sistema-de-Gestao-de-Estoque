@@ -1,1 +1,1 @@
-# Sistema-de-Gest-o-de-Estoque
+# Sistema de Gestão de Estoque
