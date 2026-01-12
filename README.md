@@ -11,7 +11,7 @@ Remover: Saída de mercadorias com verificação de disponibilidade em estoque.
 Listar: Visualização formatada de todos os itens armazenados.
 Buscar: Consulta rápida por nome para verificar a quantidade de um item específico.
 
-🛠 Ferramentas Utilizadas
+## 🛠 Ferramentas Utilizadas
 ![Python](https://img.shields.io/badge/-Python-05122A?style=flat&logo=python)&nbsp;
 
 Autor
