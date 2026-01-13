@@ -2,9 +2,11 @@ import tkinter as tk
 import json
 import os
 
+from tkinter import messagebox
+
 janela = tk.Tk()
 janela.title("Sistema de Estoque")
-janela.geometry("600x500")
+janela.geometry("700x600")
 tk.Label(janela, text="Bem-vindo ao Sistema de Estoque").pack()
 tk.Label(janela, text="SISTEMA DE ESTOQUE", bg="#f0f0f0", font=("Helvetica", 16, "bold"), fg="#333").pack(pady=10)
 
@@ -25,15 +27,21 @@ def listar_produtos(estoque):
 
 
 def remover_produto(estoque, produto, quantidade):
+    produto = produto.strip().lower()
+    confirmacao = messagebox.askyesno("Confirmação", f"Tem certeza que deseja remover {quantidade} de {produto}?")
+    if not confirmacao:
+        return
     if produto in estoque:
         if estoque[produto] >= quantidade:
             estoque[produto] -= quantidade
-            if estoque[produto] == 0:
-                del estoque[produto]
+        if estoque[produto] == 0:
+            del estoque[produto]
+
+            label_lista.config(text=f"Removido: {quantidade} de {produto.capitalize()}", fg="blue")
         else:
-            print("Quantidade insuficiente no estoque.")
+            label_lista.config(text="Erro: Quantidade insuficiente no estoque!", fg="red")
     else:
-        print("Produto não encontrado no estoque.")
+        label_lista.config(text="Erro: Produto não encontrado!", fg="red")
 
 
 def buscar_produto(estoque, produto):
@@ -58,12 +66,18 @@ def carregar_dados():
 
 
 def clicar_adicionar():
-    nome = entra_nome.get()
-    qtd = int(entra_quantidade.get())
+    try:
+        nome = entra_nome.get().strip().lower()
+        qtd = int(entra_quantidade.get())
 
-    adicionar_produto(estoque, nome, qtd)
-    salvar_dados()
-    print(f"Produto {nome} adicionado com quantidade {qtd}.")
+        adicionar_produto(estoque, nome, qtd)
+        salvar_dados()
+        label_lista.config(text=f"Produto {nome} adicionado com quantidade {qtd}.")
+        entra_nome.delete(0, tk.END)
+        entra_quantidade.delete(0, tk.END)
+
+    except ValueError:
+        label_lista.config(text="Erro: Quantidade inválida. Insira um número inteiro.")
 
 
 def clicar_listar():
@@ -73,7 +87,7 @@ def clicar_listar():
 
     texto_acumulado = "Lista de Produtos no Estoque:\n"
     for produto, quantidade in estoque.items():
-        texto_acumulado += f"{produto}: {quantidade}\n"
+        texto_acumulado += f"{produto.capitalize()}: {quantidade}\n"
 
     label_lista.config(text=texto_acumulado)
 
@@ -91,7 +105,7 @@ def buscar_produto_gui():
     if not estoque:
         label_lista.config(text="Estoque vazio.")
         return
-    texto = entra_nome.get()
+    texto = entra_nome.get().strip().lower()
     resultado = buscar_produto(estoque, texto)
     label_lista.config(text=f"Produto: {texto}, Quantidade: {resultado}")
 
