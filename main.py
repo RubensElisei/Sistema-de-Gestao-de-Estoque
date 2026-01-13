@@ -1,4 +1,6 @@
 import tkinter as tk
+import json
+import os
 
 janela = tk.Tk()
 janela.title("Sistema de Estoque")
@@ -38,11 +40,29 @@ def buscar_produto(estoque, produto):
     return estoque.get(produto, "Produto não encontrado no estoque.")
 
 
+Arquivo_estoque = "estoque_dados.json"
+
+
+def salvar_dados():
+    with open(Arquivo_estoque, 'w') as f:
+        json.dump(estoque, f, indent=4)
+
+
+def carregar_dados():
+    global estoque
+    if os.path.exists(Arquivo_estoque):
+        with open(Arquivo_estoque, 'r') as f:
+            estoque = json.load(f)
+    else:
+        estoque = {}
+
+
 def clicar_adicionar():
     nome = entra_nome.get()
     qtd = int(entra_quantidade.get())
 
     adicionar_produto(estoque, nome, qtd)
+    salvar_dados()
     print(f"Produto {nome} adicionado com quantidade {qtd}.")
 
 
@@ -63,6 +83,7 @@ def excluir_produto():
     qtd = int(entra_quantidade.get())
 
     remover_produto(estoque, nome, qtd)
+    salvar_dados()
     print(f"Produto {nome} removido com quantidade {qtd}.")
 
 
@@ -76,6 +97,7 @@ def buscar_produto_gui():
 
 
 estoque = {}
+carregar_dados()
 
 tk.Label(janela, text="Nome do Produto:", bg=cor_fundo, font=("Arial", 10, "bold")).pack(pady=(10, 0))
 entra_nome = tk.Entry(janela, font=("Arial", 11), width=35)
